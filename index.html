@@ -9,17 +9,49 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             background-color: black;
         }
         canvas {
             border: 2px solid white;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <div class="controls">
+        <div class="control-row">
+            <button id="leftButton">Left</button>
+            <button id="upButton">Up</button>
+            <button id="rightButton">Right</button>
+        </div>
+        <div class="control-row">
+            <button id="downButton">Down</button>
+            <button id="resetButton">Reset</button>
+        </div>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -132,6 +164,15 @@
             }
         }
 
+        function handleButtonInput(newDirection) {
+            if ((newDirection === 'LEFT' && direction !== 'RIGHT') ||
+                (newDirection === 'UP' && direction !== 'DOWN') ||
+                (newDirection === 'RIGHT' && direction !== 'LEFT') ||
+                (newDirection === 'DOWN' && direction !== 'UP')) {
+                direction = newDirection;
+            }
+        }
+
         function restartGame() {
             snake = [{ x: 10, y: 10 }];
             food = { x: 5, y: 5 };
@@ -139,6 +180,12 @@
             gameOver = false;
             gameLoop = setInterval(update, GAME_SPEED);
         }
+
+        document.getElementById('leftButton').addEventListener('click', () => handleButtonInput('LEFT'));
+        document.getElementById('upButton').addEventListener('click', () => handleButtonInput('UP'));
+        document.getElementById('rightButton').addEventListener('click', () => handleButtonInput('RIGHT'));
+        document.getElementById('downButton').addEventListener('click', () => handleButtonInput('DOWN'));
+        document.getElementById('resetButton').addEventListener('click', () => restartGame());
 
         window.addEventListener('keydown', handleKeyDown);
 
